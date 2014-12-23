@@ -1,8 +1,10 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="net.sf.json.*" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%
 	JSONObject json = (JSONObject)request.getAttribute("json");
 	String image_server = json.get("image_server").toString();
+	DecimalFormat df = new DecimalFormat("######0.00");
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -32,6 +34,7 @@
 		</script>
 	</head>
 	<body>
+	<%= json %>
 		<div class="container">
 			<jsp:include page="../header.jsp">
 				<jsp:param name="prefix" value=""/>
@@ -48,12 +51,12 @@
 					Map banner = (Map)banners.get(i);
 %>
 					<li>
-						<img src="<%= image_server + "/" + banner.get("hd_graph") %>" alt="">
+						<img src="<%= image_server + "/" + banner.get("icon_graph") %>" alt="">
 						<div class="caption">
 							<div class="slide-text-info">
 								<h1><%= banner.get("header") %></h1>
 								<label><%= banner.get("label") %></label>
-								<a class="slide-btn" href="#"><span><%= banner.get("price") %></span> <small>GET NOW</small><label> </label></a>
+								<a class="slide-btn" href="#"><span><%= df.format(Float.parseFloat(banner.get("price").toString())) %></span> <small>GET NOW</small><label> </label></a>
 							</div>
 						</div>
 					</li>
@@ -78,7 +81,7 @@
 										<img class="r-img text-center" src="<%= image_server + "/" + category.get("image") %>" title="name" />
 										<span><img src="<%= image_server + "/" + category.get("shadow_image") %>" title="name" /></span>
 										<h4>总共有</h4>
-										<label>357件商品</label>
+										<label><%= category.get("count") %>件商品</label>
 										<a class="r-list-w" href="single-page.html"><img src="images/list-icon.png" title="list" /></a>
 									</div>
 								</div>
@@ -106,10 +109,10 @@
 							Map product = (Map)special_products.get(i);
 %>
 							<div class="col-md-3 special-products-grid text-center">
-								<a class="brand-name" href="<%= product.get("brand_id") %>"><img src="images/b1.jpg" title="name" /></a>
-								<a class="product-here" href="<%= product.get("id") %>"><img src="images/p1.jpg" title="product-name" /></a>
-								<h4><a href="single-page.html"><%= product.get("product_name") %></a></h4>
-								<a class="product-btn" href="single-page.html"><span><%= product.get("price") %>$</span><small>GET NOW</small><label> </label></a>
+								<a class="brand-name" href="Product_search.do?brand_ids=<%= product.get("brand_id") %>"><img src="images/b1.jpg" title="name" /></a>
+								<a class="product-here" href="Product_details.do?product_id=<%= product.get("id") %>"><img src="<%= image_server + "/" + product.get("icon_graph") %>" title="<%= product.get("product_name") %>" /></a>
+								<h4><a href="Product_details.do?product_id=<%= product.get("id") %>"><%= product.get("product_name") %></a></h4>
+								<a class="product-btn" href="Product_details.do?product_id=<%= product.get("id") %>"><span><%= df.format(Float.parseFloat(product.get("price").toString())) %>$</span><small>GET NOW</small><label> </label></a>
 							</div>
 <%
 						}

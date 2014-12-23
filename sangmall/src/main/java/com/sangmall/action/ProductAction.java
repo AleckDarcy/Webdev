@@ -32,9 +32,15 @@ public class ProductAction extends ActionSupport {
 	@SuppressWarnings("rawtypes")
 	public String show() {		
 		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
-		List banners = jt.queryForList("select banners.header as header, banners.label as label, products.price * products.discount_rate as price, products.hd_graph as hd_graph from banners left join products on banners.product_id = products.id order by banners.id");
+		List banners = jt.queryForList("select banners.header as header, banners.label as label, products.price * products.discount_rate as price, products.icon_graph as icon_graph from banners left join products on banners.product_id = products.id order by banners.id");
 		List recommended_categories = jt.queryForList("select * from categories where is_recommended=1 order by id desc limit 3");
 		List special_products = jt.queryForList("select *, price * discount_rate as price from products where is_special=1 order by id desc");
+		for(int i = 0; i < recommended_categories.size(); i++) {
+			Map category = (Map)recommended_categories.get(i);
+			Object id = category.get("id");
+			Map products = jt.queryForMap("select count(*) as count from product_category where category_id=" + id);
+			category.put("count", products.get("count"));
+		}
 		
 		data.put("result", 0);
 		data.put("banners", banners);
@@ -114,14 +120,14 @@ public class ProductAction extends ActionSupport {
 	
 	public String details() {
 		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
-		List product = jt.queryForList("select * from products where id=?", new Object[]{product_id});
+		List product = jt.queryForList("select *, price * discount_rate as current_price from products where id=?", new Object[]{product_id});
 		List categories = jt.queryForList("select * from categories where id in (select distinct category_id from product_category where product_id=?)", new Object[]{product_id});
 		data.put("result", 0);
-		data.put("product", product);
-		data.put("page", page);
-		data.put("limit", limit);
+		if(product.size() > 0) {
+			data.put("product", product.get(0));
+		}
 		data.put("categories", categories);
-		data.put("product_name", product_name);
+		data.put("product_id", product_id);
 		data.put("brand_ids", brand_ids);
 		data.put("image_server", Constants.SANG_MALL_IMAGE_SERVER);
 		json = JSONObject.fromObject(data);

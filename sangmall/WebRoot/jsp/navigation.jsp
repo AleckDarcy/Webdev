@@ -15,7 +15,7 @@
 				<a href="Product_search.do">所有商品</a><span></span>
 			</li>
 			<li>
-				<a href="products.html">关于我们</a><span></span>
+				<a href="Mall_about_us.do">关于我们</a><span></span>
 			</li>
 			<div class="clearfix"></div>
 		</ul>

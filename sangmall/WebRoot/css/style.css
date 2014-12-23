@@ -634,6 +634,10 @@ img.r-img{
 }
 .filters-head-left{
 	float:left;
+	margin: 0em 0px 1em;
+}
+.filters-head-right{
+	float:right;
 }
 .filters-head-left h3{
 	margin: 0;
@@ -651,11 +655,12 @@ img.r-img{
 .filters-tag{
 	width:75px;
 	float:left;
+	margin: 0em 0px 1em;
 }
 .filters-choice{
 	border:1px solid;
 	width:100px;
-	margin: 0em 10px 0em;
+	margin: 0em 10px 1em;
 	float:left;
 }
 /*----special-products----*/
@@ -1386,7 +1391,7 @@ a.shipping span{
 	font-weight:bold;
 }
 .product-tabs{
-	margin-bottom:4em;
+	margin-bottom:10em;
 }
 /*--// product-details ----*/
 /*----start-contact----*/

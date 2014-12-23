@@ -40,8 +40,14 @@
 			<result name="login">/login_alert.jsp</result>
 		</global-results>
 
-		<action name="User_login" class="com.sangmall.action.UserAction" method="login">
+		<!--action name="User_login" class="com.sangmall.action.UserAction" method="login">
 			 <result name="success">json/json.jsp</result>
+		</action-->
+		
+		<action name="Admin_*_*" class="com.sangmall.admin.action.{1}Action" method="{2}">
+			 <result name="success">admin/jsp/{1}/{2}.jsp</result>
+			 <result name="json">admin/json/json.jsp</result>
+			 <!--interceptor-ref name="mydefault" /-->
 		</action>
 		
 		<action name="*_*" class="com.sangmall.action.{1}Action" method="{2}">
@@ -49,7 +55,7 @@
 			 <result name="json">json/json.jsp</result>
 			 <!--interceptor-ref name="mydefault" /-->
 		</action>
-				
+		
 	</package>
 	 
 </struts>

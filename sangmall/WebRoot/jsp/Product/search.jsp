@@ -48,23 +48,37 @@
 					<div class="filters-head-left">
 						<h3>高级<span>搜索</span></h3>
 					</div>
+					<div class="filters-head-right">
+						<button type="button" class="btn btn-primary">　搜　　索　</button>
+					</div>
 					<div class="clearfix"> </div>
 				</div>
 				<div class="filters-grids">
-					<label>品名：</label><input type="text" name="product_name" value="<%= json.get("product_name") %>"><br>
-					<label>品牌：</label>
+					<div class="filters-container">
+						<div class="filters-tag">
+							<label>品名：</label>
+						</div>
+						<div class="col-xs-2">
+							<input type="text" name="product_name" class="form control" value="<%= json.get("product_name") %>"><br>
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+					<div class="filters-container">
+						<div class="filters-tag">
+							<label>品牌：</label>
+						</div>
 <%
 						JSONArray brands = json.getJSONArray("brands");
 						for(int i = 0; i < brands.size(); i++) {
 							Map brand = (Map)brands.get(i);
 %>
-							<div>
+							<div class="filters-choice">
 								<%= brand.get("brand_name") %>
 							</div>
 <%
 						}
 %>
-					<br>
+					<div class="clearfix"> </div>
 					
 					<div class="filters-container">
 						<div class="filters-tag">
@@ -82,13 +96,13 @@
 						}
 %>					
 						</div>
-					<br>
-					<label></label>
+						<br>
+						<label></label>
+					</div>
 				</div>
-				<div class="clearfix"> </div>
 			</div>
 		</div>
-		
+
 		<div class="container"> 
 			<div class="special-products">
 				<div class="s-products-head">
@@ -112,10 +126,10 @@
 						Map product = (Map)products.get(i);
 %>
 						<div class="col-md-3 special-products-grid text-center">
-							<a class="brand-name" href="<%= product.get("brand_id") %>"><img src="images/b1.jpg" title="name" /></a>
-							<a class="product-here" href="<%= product.get("id") %>"><img src="images/p1.jpg" title="product-name" /></a>
-							<h4><a href="single-page.html"><%= product.get("product_name") %></a></h4>
-							<a class="product-btn" href="single-page.html"><span><%= product.get("price") %>$</span><small>GET NOW</small><label> </label></a>
+							<a class="brand-name" href="Product_search.do?brand_ids=<%= product.get("brand_id") %>"><img src="images/b1.jpg" title="name" /></a>
+							<a class="product-here" href="Product_details.do?product_id=<%= product.get("id") %>"><img src="<%= image_server + "/" + product.get("icon_graph") %>" title="<%= product.get("product_name") %>" /></a>
+							<h4><a href="Product_details.do?product_id=<%= product.get("id") %>"><%= product.get("product_name") %></a></h4>
+							<a class="product-btn" href="Product_details.do?product_id=<%= product.get("id") %>"><span><%= product.get("price") %>$</span><small>GET NOW</small><label> </label></a>
 						</div>
 <%
 					}
