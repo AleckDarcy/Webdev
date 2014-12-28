@@ -25,7 +25,7 @@
 	
 		<interceptors>  
             <interceptor name="authority"  
-                class="com.sangmall.interceptor.LoginInterceptor">  
+                class="com.sangmall.admin.interceptor.LoginInterceptor">  
             </interceptor>  
             <!-- 拦截器栈 -->  
             <interceptor-stack name="mydefault">  
@@ -37,17 +37,22 @@
 		<!-- 定义全局Result -->
 		<global-results>
 			<!-- 当返回login视图名时，转入/login.jsp页面 -->
-			<result name="login">/login_alert.jsp</result>
+			<result name="login">Admin_login.do</result>
 		</global-results>
 
 		<!--action name="User_login" class="com.sangmall.action.UserAction" method="login">
 			 <result name="success">json/json.jsp</result>
 		</action-->
 		
-		<action name="Admin_*_*" class="com.sangmall.admin.action.{1}Action" method="{2}">
-			 <result name="success">admin/jsp/{1}/{2}.jsp</result>
+		<action name="Admin_login" class="com.sangmall.admin.action.AdminAction" method="login">
+			 <result name="success">admin/jsp/Admin/login.jsp</result>
 			 <result name="json">admin/json/json.jsp</result>
-			 <!--interceptor-ref name="mydefault" /-->
+		</action>
+		
+		<action name="Admin_*" class="com.sangmall.admin.action.AdminAction" method="{1}">
+			 <result name="success">admin/jsp/Admin/{1}.jsp</result>
+			 <result name="json">admin/json/json.jsp</result>
+			 <interceptor-ref name="mydefault" />
 		</action>
 		
 		<action name="*_*" class="com.sangmall.action.{1}Action" method="{2}">

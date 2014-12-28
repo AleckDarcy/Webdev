@@ -44,62 +44,83 @@
 		
 		<div class="container">
 			<div class="filters">
-				<div class="filters-head">
-					<div class="filters-head-left">
-						<h3>高级<span>搜索</span></h3>
-					</div>
-					<div class="filters-head-right">
-						<button type="button" class="btn btn-primary">　搜　　索　</button>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-				<div class="filters-grids">
-					<div class="filters-container">
-						<div class="filters-tag">
-							<label>品名：</label>
+				<form action="Product_search.do" method="get">
+					<div class="filters-head">
+						<div class="filters-head-left">
+							<h3>高级<span>搜索</span></h3>
 						</div>
-						<div class="col-xs-2">
-							<input type="text" name="product_name" class="form control" value="<%= json.get("product_name") %>"><br>
+						<div class="filters-head-right">
+							<button type="button" class="btn btn-primary">　搜　　索　</button>
+							<input type="submit">
 						</div>
+						<div class="clearfix"> </div>
 					</div>
-					<div class="clearfix"> </div>
-					<div class="filters-container">
-						<div class="filters-tag">
-							<label>品牌：</label>
+					<div class="filters-grids">
+						<div class="filters-container">
+							<div class="filters-tag">
+								<label>品名：</label>
+							</div>
+							<div class="col-xs-2">
+								<input type="text" name="product_name" class="form control" value="<%= json.get("product_name") %>"><br>
+							</div>
 						</div>
-<%
-						JSONArray brands = json.getJSONArray("brands");
-						for(int i = 0; i < brands.size(); i++) {
-							Map brand = (Map)brands.get(i);
-%>
-							<div class="filters-choice">
-								<%= brand.get("brand_name") %>
+						<div class="clearfix"> </div>
+						<div class="filters-container">
+							<div class="filters-tag">
+								<label>品牌：</label>
 							</div>
 <%
-						}
+							JSONArray brands = json.getJSONArray("brands");
+							for(int i = 0; i < brands.size(); i++) {
+								Map brand = (Map)brands.get(i);
+								if(Boolean.parseBoolean(brand.get("selected").toString())) {
 %>
-					<div class="clearfix"> </div>
-					
-					<div class="filters-container">
-						<div class="filters-tag">
-							<label>类别：</label>
-						</div>
+
+									<div class="filters-selected" onclick="$(this).find('input').attr('checked', !$(this).find('input').attr('checked')); if(!$(this).find('input').attr('checked')) $(this).attr('class', 'filters-choice'); else $(this).attr('class', 'filters-selected');">
+										<input name="brand_ids" style="display:none;" type="checkbox" value="<%= brand.get("id") %>" checked/><a><%= brand.get("brand_name") %></a>
+									</div>
 <%
-						JSONArray categories = json.getJSONArray("categories");
-						for(int i = 0; i < categories.size(); i++) {
-							Map category = (Map)categories.get(i);
+								} else {
 %>
-							<div class="filters-choice">
-								<%= category.get("category_name") %>
+									<div class="filters-choice" onclick="$(this).find('input').attr('checked', !$(this).find('input').attr('checked')); if(!$(this).find('input').attr('checked')) $(this).attr('class', 'filters-choice'); else $(this).attr('class', 'filters-selected');">
+										<input name="brand_ids" style="display:none;" type="checkbox" value="<%= brand.get("id") %>" /><a><%= brand.get("brand_name") %></a>
+									</div>
+<%											
+								}
+							}
+%>
+						<div class="clearfix"> </div>
+						
+						<div class="filters-container">
+							<div class="filters-tag">
+								<label>类别：</label>
 							</div>
 <%
-						}
-%>					
+							JSONArray categories = json.getJSONArray("categories");
+							for(int i = 0; i < categories.size(); i++) {
+								Map category = (Map)categories.get(i);
+								if(Boolean.parseBoolean(category.get("selected").toString())) {
+%>
+
+									<div class="filters-selected" onclick="$(this).find('input').attr('checked', !$(this).find('input').attr('checked')); if(!$(this).find('input').attr('checked')) $(this).attr('class', 'filters-choice'); else $(this).attr('class', 'filters-selected');">
+										<input name="category_ids" style="display:none;" type="checkbox" value="<%= category.get("id") %>" checked/><a><%= category.get("category_name") %></a>
+									</div>
+<%
+								} else {
+%>
+									<div class="filters-choice" onclick="$(this).find('input').attr('checked', !$(this).find('input').attr('checked')); if(!$(this).find('input').attr('checked')) $(this).attr('class', 'filters-choice'); else $(this).attr('class', 'filters-selected');">
+										<input name="category_ids" style="display:none;" type="checkbox" value="<%= category.get("id") %>" /><a><%= category.get("category_name") %></a>
+									</div>
+<%											
+								}
+							}
+%>			
+							</div>
+							<br>
+							<label></label>
 						</div>
-						<br>
-						<label></label>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 

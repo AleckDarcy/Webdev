@@ -659,10 +659,20 @@ img.r-img{
 }
 .filters-choice{
 	border:1px solid;
+	border-color: white;
 	width:100px;
 	margin: 0em 10px 1em;
 	float:left;
 }
+
+.filters-selected{
+	border:1px solid;
+	border-color: red;
+	width:100px;
+	margin: 0em 10px 1em;
+	float:left;
+}
+
 /*----special-products----*/
 .special-products{
 	background: #FFF;

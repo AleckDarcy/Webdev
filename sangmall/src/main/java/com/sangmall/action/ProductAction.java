@@ -73,6 +73,7 @@ public class ProductAction extends ActionSupport {
 				sql += "and product_name like '%" + product_name + "%' ";
 			} else {
 				sql += "where product_name like '%" + product_name + "%' ";
+				need_and = true;
 			}
 		}
 		if(category_ids.length != 0) {
@@ -93,12 +94,31 @@ public class ProductAction extends ActionSupport {
 				sql += "and id in (" + ids + ") ";
 			} else {
 				sql += "where id in (" + ids + ") ";
+				need_and = true;
 			}
 		}
 		Map count = jt.queryForMap("select count(*) as count " + sql);
 		List products = jt.queryForList("select * " + sql + "limit " + page * limit + ", " + limit);
 		List categories = jt.queryForList("select * from categories");
+		for(int i = 0; i < categories.size(); i++) {
+			Map category = (Map)categories.get(i);
+			category.put("selected", false);
+			for(int j = 0; j < category_ids.length; j++) {
+				if((category.get("id") + "").equalsIgnoreCase(category_ids[j] + "")) {
+					category.put("selected", true);
+				}
+			}
+		}
 		List brands = jt.queryForList("select * from brands");
+		for(int i = 0; i < brands.size(); i++) {
+			Map brand = (Map)brands.get(i);
+			brand.put("selected", false);
+			for(int j = 0; j < brand_ids.length; j++) {
+				if((brand.get("id") + "").equalsIgnoreCase(brand_ids[j] + "")) {
+					brand.put("selected", true);
+				}
+			}
+		}
 		data.put("result", 0);
 		data.put("count", count.get("count"));
 		data.put("products", products);

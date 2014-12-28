@@ -77,12 +77,14 @@
 %>
 								<div class="col-xs-4">
 									<div class="top-row-col1 text-center">
-										<h2><%= category.get("category_name") %></h2>
-										<img class="r-img text-center" src="<%= image_server + "/" + category.get("image") %>" title="name" />
-										<span><img src="<%= image_server + "/" + category.get("shadow_image") %>" title="name" /></span>
-										<h4>总共有</h4>
-										<label><%= category.get("count") %>件商品</label>
-										<a class="r-list-w" href="single-page.html"><img src="images/list-icon.png" title="list" /></a>
+										<a class="r-list-w" href="Product_search.do?category_ids=<%= category.get("id") %>">
+											<h2><%= category.get("category_name") %></h2>
+											<img class="r-img text-center" src="<%= image_server + "/" + category.get("image") %>" title="name" />
+											<span><img src="<%= image_server + "/" + category.get("shadow_image") %>" title="name" /></span>
+											<h4>总共有</h4>
+											<label><%= category.get("count") %>件商品</label>
+											<img src="images/list-icon.png" title="list" />
+										</a>
 									</div>
 								</div>
 <%
