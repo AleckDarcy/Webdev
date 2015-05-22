@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sangmall.utils.CartUtil;
+import com.sangmall.utils.LoginUtil;
 
 public class UserAction extends ActionSupport {
 	private int page = 0;
@@ -16,23 +21,17 @@ public class UserAction extends ActionSupport {
 	private int id;
 	private String username;
 	private String password;
-	private int privilege;
-
+	private String render = "";
+	private String redirect = "";
 	@Resource
 	private ApplicationContext applicationContext;
 	
 	Map data = new HashMap();
-	
+	JSONObject json;
+
 	public String login() {
-//		TemplateDao templateDao = (TemplateDao)applicationContext.getBean("templateDao");
-//		User user = new User();
-//		user.setUsername(username);
-//		user.setPassword(password);
-//		user.setPrivilege(privilege);
-//		Object result = templateDao.selectModel(user);
-		
 		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
-		List result = jt.queryForList("select * from users where username=? and password=? and privilege=?", new Object[]{username, password, privilege});
+		List result = jt.queryForList("select * from users where username=? and password=?", new Object[]{username, password});
 		System.out.println("================================================");
 		System.out.println(result);
 		System.out.println("================================================");
@@ -40,14 +39,102 @@ public class UserAction extends ActionSupport {
 			data.put("result", -1);
 			data.put("error_code", "Everything is ruined!");
 		} else if(result.size() == 1){
+			LoginUtil.login(username, ActionContext.getContext().getSession());
 			data.put("result", 0);
-			data.put("privilege", privilege);
 			data.put("error_code", "OK");
+			data.put("redirect", redirect);
 		} else {
 			data.put("result", -2);
 			data.put("error_code", "Internal error!");
 		}
-		return "success";
+		data.put("cart", CartUtil.getCart(ActionContext.getContext().getSession()));
+		json = JSONObject.fromObject(data);
+		if(render.equals("json")) {	
+			return "json";
+		} else {
+			return "success";
+		}
+	}
+	
+	public String logout() {
+		LoginUtil.logout(ActionContext.getContext().getSession());
+		data.put("result", 0);
+		data.put("cart", CartUtil.getCart(ActionContext.getContext().getSession()));
+		data.put("login_username", "");
+		json = JSONObject.fromObject(data);
+		if(render.equals("json")) {	
+			return "json";
+		} else {
+			return "success";
+		}
+	}
+	
+	public String register() {
+		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
+		int user = jt.update("insert into users (username, password) values (?, ?)", new Object[]{username, password});
+		System.out.println("================================================");
+		System.out.println(user);
+		System.out.println("================================================");
+		if(user == 0) {
+			data.put("result", -1);
+			data.put("error_code", "Everything is ruined!");
+		} else if(user == 1){
+			LoginUtil.login(username, ActionContext.getContext().getSession());
+			data.put("result", 0);
+			data.put("error_code", "OK");
+			data.put("redirect", redirect);
+			data.put("cart", CartUtil.getCart(ActionContext.getContext().getSession()));
+		} else {
+			data.put("result", -2);
+			data.put("error_code", "Internal error!");
+		}
+		json = JSONObject.fromObject(data);
+		if(render.equals("json")) {
+			return "json";
+		} else {
+			return "success";
+		}
+	}
+	
+	public String home() {
+		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
+		String username = LoginUtil.getLoginUsername(ActionContext.getContext().getSession());
+		if(username.length() == 0) {
+			data.put("result", -1);
+			data.put("redirect", "User_home.do");
+			json = JSONObject.fromObject(data);
+			return "login";
+		}
+		Map result = jt.queryForMap("select * from users where username=?", new Object[]{username});
+		if(result == null) {
+			data.put("result", -1);
+			data.put("redirect", "User_home.do");
+			json = JSONObject.fromObject(data);
+			return "login";
+		} else {
+			int user_id = Integer.parseInt(result.get("id") + "");
+			List orders = jt.queryForList("select * from orders where user_id=? order by create_time desc", new Object[]{user_id});
+			data.put("result", 0);
+			data.put("orders", orders);
+			data.put("cart", CartUtil.getCart(ActionContext.getContext().getSession()));
+			data.put("login_username", LoginUtil.getLoginUsername(ActionContext.getContext().getSession()));
+			json = JSONObject.fromObject(data);
+			return "success";
+		}
+	}
+	
+	public String check() {
+		JdbcTemplate jt = (JdbcTemplate)applicationContext.getBean("jdbcTemplate");
+		List result = jt.queryForList("select * from users where username=?", new Object[]{username});
+		if(username == null || username.length() == 0) {
+			data.put("result", -2);
+		} else if(result.size() == 0) {
+			data.put("result", 0);
+		} else {
+			data.put("result", -1);
+		}
+		json = JSONObject.fromObject(data);
+		return "json";
 	}
 	
 	public Map getData() {
@@ -98,11 +185,27 @@ public class UserAction extends ActionSupport {
 		this.password = password;
 	}
 
-	public int getPrivilege() {
-		return privilege;
+	public void setRender(String render) {
+		this.render = render;
 	}
 
-	public void setPrivilege(int privilege) {
-		this.privilege = privilege;
+	public String getRender() {
+		return render;
+	}
+	
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
+	}
+
+	public void setRedirect(String redirect) {
+		this.redirect = redirect;
+	}
+
+	public String getRedirect() {
+		return redirect;
 	}
 }

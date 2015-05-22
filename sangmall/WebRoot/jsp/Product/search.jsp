@@ -2,6 +2,12 @@
 <%@ page import="net.sf.json.*" %>
 <%
 	JSONObject json = (JSONObject)request.getAttribute("json");
+	Map cart = json.getJSONObject("cart");
+	String login_username = json.getString("login_username");
+	int cart_count = 0;
+	if(!cart.isEmpty()) {
+		cart_count = ((Map)cart.get("items")).size();
+	}
 	String image_server = json.get("image_server").toString();
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -32,10 +38,11 @@
 		</script>
 	</head>
 	<body>
-	<%= json %>
 		<div class="container">
 			<jsp:include page="../header.jsp">
 				<jsp:param name="prefix" value=""/>
+				<jsp:param name="cart_count" value="<%= cart_count %>"/>
+				<jsp:param name="login_username" value="<%= login_username %>"/>
 			</jsp:include>
 			<jsp:include page="../navigation.jsp">
 				<jsp:param name="prefix" value=""/>
@@ -44,14 +51,14 @@
 		
 		<div class="container">
 			<div class="filters">
-				<form action="Product_search.do" method="get">
+				<form action="Product_search.do" class="search" method="get">
 					<div class="filters-head">
 						<div class="filters-head-left">
 							<h3>高级<span>搜索</span></h3>
 						</div>
 						<div class="filters-head-right">
-							<button type="button" class="btn btn-primary">　搜　　索　</button>
-							<input type="submit">
+							<button type="button" onclick="$('.search').submit();" class="btn btn-primary">　搜　　索　</button>
+							<input type="submit" style="display:none;">
 						</div>
 						<div class="clearfix"> </div>
 					</div>
@@ -147,7 +154,7 @@
 						Map product = (Map)products.get(i);
 %>
 						<div class="col-md-3 special-products-grid text-center">
-							<a class="brand-name" href="Product_search.do?brand_ids=<%= product.get("brand_id") %>"><img src="images/b1.jpg" title="name" /></a>
+							<a class="brand-name" href="Product_search.do?brand_ids=<%= product.get("brand_id") %>"><img src="<%= image_server + "/" + product.get("brand_icon_graph") %>" title="name" /></a>
 							<a class="product-here" href="Product_details.do?product_id=<%= product.get("id") %>"><img src="<%= image_server + "/" + product.get("icon_graph") %>" title="<%= product.get("product_name") %>" /></a>
 							<h4><a href="Product_details.do?product_id=<%= product.get("id") %>"><%= product.get("product_name") %></a></h4>
 							<a class="product-btn" href="Product_details.do?product_id=<%= product.get("id") %>"><span><%= product.get("price") %>$</span><small>GET NOW</small><label> </label></a>
@@ -157,8 +164,13 @@
 %>
 					<div class="clearfix"> </div>
 				</div>
+				<jsp:include page="../pager.jsp">
+					<jsp:param name="action" value="Product_search.do"/>
+					<jsp:param name="params" value="<%= json %>"/>
+				</jsp:include>
 			</div>
 		</div>
+	
 		<jsp:include page="../footer.jsp">
 			<jsp:param name="prefix" value=""/>
 		</jsp:include>

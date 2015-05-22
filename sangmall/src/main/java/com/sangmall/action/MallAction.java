@@ -10,8 +10,11 @@ import net.sf.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sangmall.util.Constants;
+import com.sangmall.utils.CartUtil;
+import com.sangmall.utils.LoginUtil;
 
 public class MallAction extends ActionSupport {
 	private String render = "";
@@ -24,8 +27,10 @@ public class MallAction extends ActionSupport {
 	public String about_us() {
 		data.put("result", 0);
 		data.put("title", "Sang Mall");
-		data.put("message", "wawawawawawawawa");
+		data.put("cart", CartUtil.getCart(ActionContext.getContext().getSession()));
 		data.put("image_server", Constants.SANG_MALL_IMAGE_SERVER);
+		data.put("login_username", LoginUtil.getLoginUsername(ActionContext.getContext().getSession()));
+		data.put("message", "blah blah blah ...");
 		json = JSONObject.fromObject(data);
 		if(render.equals("json")) {
 			return "json";

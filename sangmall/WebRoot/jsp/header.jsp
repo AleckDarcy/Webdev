@@ -1,5 +1,10 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%
+	String cart_count = request.getParameter("cart_count");
+	String login_username = request.getParameter("login_username");
+	if(login_username == null) {
+		login_username = "";
+	}
 	String prefix = request.getParameter("prefix");
 	if(prefix == null) {
 		prefix = "";
@@ -7,7 +12,7 @@
 %>
 <div class="top-header">
 	<div class="logo">
-		<a href="index.html"><img src="images/logo.png" title="barndlogo" />
+		<a href="Product_show.do"><img src="images/logo.png" title="barndlogo" />
 		</a>
 	</div>
 	<div class="top-header-info">
@@ -26,11 +31,11 @@
 			<div class="add-to-cart">
 				<ul class="unstyled-list list-inline">
 					<li>
-						<span class="cart" onclick="alert('wa');"></span>
+						<span class="cart" onclick="location.href='Cart_show.do'"></span>
 						<ul class="cart-sub">
 							<li>
 								<p>
-									0件商品
+									<%= cart_count %>件商品
 								</p>
 							</li>
 						</ul>
@@ -39,13 +44,29 @@
 			</div>
 			<div class="login-rigister">
 				<ul class="unstyled-list list-inline">
-					<li>
-						<a class="login" href="#">登　录</a>
-					</li>
-					<li>
-						<a class="rigister" href="#">注　册<span> </span>
-						</a>
-					</li>
+<%
+					if(login_username.length() == 0) {
+%>
+						<li>
+							<a class="login" href="User_login.do">登　录</a>
+						</li>
+						<li>
+							<a class="rigister" href="User_register.do">注　册<span> </span>
+							</a>
+						</li>
+<%
+					} else {
+%>
+						<li>
+							<a class="login" href="User_home.do"><%= login_username %></a>
+						</li>
+						<li>
+							<a class="rigister" href="User_logout.do">退　出<span> </span>
+							</a>
+						</li>
+<%
+					}
+%>
 					<div class="clearfix"></div>
 				</ul>
 			</div>

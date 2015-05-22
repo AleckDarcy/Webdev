@@ -3,6 +3,12 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%
 	JSONObject json = (JSONObject)request.getAttribute("json");
+	Map cart = json.getJSONObject("cart");
+	String login_username = json.getString("login_username");
+	int cart_count = 0;
+	if(!cart.isEmpty()) {
+		cart_count = ((Map)cart.get("items")).size();
+	}
 	String image_server = json.get("image_server").toString();
 	Map product = (Map)json.get("product");
 	DecimalFormat df = new DecimalFormat("######0.00");
@@ -35,10 +41,11 @@
 		</script>
 	</head>
 	<body>
-		<%= product %>
 		<div class="container">
 			<jsp:include page="../header.jsp">
 				<jsp:param name="prefix" value=""/>
+				<jsp:param name="cart_count" value="<%= cart_count %>"/>
+				<jsp:param name="login_username" value="<%= login_username %>"/>
 			</jsp:include>
 			<jsp:include page="../navigation.jsp">
 				<jsp:param name="prefix" value=""/>
@@ -60,10 +67,10 @@
 						<script>
 							jQuery(document).ready(function($){
 								$('#etalage').etalage({
-									thumb_image_width: 300,
-									thumb_image_height: 400,
-									source_image_width: 900,
-									source_image_height: 1000,
+									thumb_image_width: 352,
+									thumb_image_height: 198,
+									source_image_width: 800,
+									source_image_height: 450,
 									show_hint: true,
 									click_callback: function(image_anchor, instance_id){
 										alert('Callback example:\nYou clicked on an image with the anchor: "'+image_anchor+'"\n(in Etalage instance: "'+instance_id+'")');
@@ -80,8 +87,8 @@
 							<div class="details-left-slider">
 								<ul id="etalage">
 									<li>
-										<img class="etalage_thumb_image" src="images/product-slide/image1_thumb.jpg" />
-										<img class="etalage_source_image" src="images/product-slide/image1_large.jpg" />
+										<img class="etalage_thumb_image" src="<%= image_server + "/" + product.get("icon_graph") %>"/>
+										<img class="etalage_source_image" src="<%= image_server + "/" + product.get("icon_graph") %>"/>
 									</li>
 								</ul>
 							</div>
@@ -109,7 +116,7 @@
 							<div class="clearfix"> </div>
 							<div class="product-cart-share">
 								<div class="add-cart-btn">
-									<input type="button" value="Add to cart" />
+									<input type="button" value="Add to cart" onclick="add_to_cart(<%= product.get("id") %>, '<%= product.get("product_name") %>', <%= df.format(Float.parseFloat(product.get("current_price").toString())) %>);"/>
 								</div>
 							</div>
 						</div>
@@ -128,27 +135,15 @@
 				        	<p>With its beautiful premium leather, lace-up oxford styling, recycled rubber outsoles and 9-inch height, this Earthkeepers City Premium style is an undeniably handsome boot. To complement its rustic, commanding outer appearance, we've paid attention to the inside as well - by adding SmartWool庐 faux shearling to the linings and crafting the footbed using our exclusive anti-fatigue comfort foam technology to absorb shock. Imported.</p>
 				       		<span>DETAILS:</span>
 				       		<div class="product-fea">
-				       			<p>Premium burnished full-grain leather and suede upper</p>
-				       			<p>Leather is from a tannery rated Silver for its water, energy and waste-management practices</p>
-				       			<p>Leather lining and footbed for a premium feel and optimal comfort</p>
-				       			<p>SmartWool庐 faux shearling lining is made with 60% merino wool and 40% PET</p>
-				       			<p>Reflective insole board for additional warmth under foot</p>
-				       			<p>100% organic cotton laces</p>
-				       			<p>SmartWool庐 fabric-lined anti-fatigue footbed provides superior, all-day comfort and climate control</p>
-				       			<p>Timberland庐 exclusive Gripstick鈩?and Green Rubber鈩?outsole is made with 42% recycled rubber</p>
+				       			<p>wawa</p>
 				       		</div>
 				        </div>
 				        <div id="tab-2" class="product-complete-info">
 				        	<h3>DESCRIPTION:</h3>
-				        	<p>With its beautiful premium leather, lace-up oxford styling, recycled rubber outsoles and 9-inch height, this Earthkeepers City Premium style is an undeniably handsome boot. To complement its rustic, commanding outer appearance, we've paid attention to the inside as well - by adding SmartWool庐 faux shearling to the linings and crafting the footbed using our exclusive anti-fatigue comfort foam technology to absorb shock. Imported.</p>
-				       		<p>lace-up oxford styling, recycled rubber outsoles and 9-inch height, this Earthkeepers City Premium style is an undeniably handsome boot. To complement its rustic, commanding outer appearance,</p>
-				       		<span>DETAILS:</span>
+				        	<p>wawa</p>
+							<span>DETAILS:</span>
 				       		<div class="product-fea">
-				       			<p>Premium burnished full-grain leather and suede upper</p>
-				       			<p>Leather is from a tannery rated Silver for its water, energy and waste-management practices</p>
-				       			<p>Leather lining and footbed for a premium feel and optimal comfort</p>
-				       			<p>SmartWool庐 faux shearling lining is made with 60% merino wool and 40% PET</p>
-				       			<p>Reflective insole board for additional warmth under foot</p>
+				       			<p>wawa</p>
 				       		</div>
 				        </div>
 				        <div id="tab-3"  class="product-complete-info">
@@ -156,17 +151,7 @@
 				        	<p>With its beautiful premium leather, lace-up oxford styling, recycled rubber outsoles and 9-inch height, this Earthkeepers City Premium style is an undeniably handsome boot. To complement its rustic, commanding outer appearance, we've paid attention to the inside as well - by adding SmartWool庐 faux shearling to the linings and crafting the footbed using our exclusive anti-fatigue comfort foam technology to absorb shock. Imported.</p>
 				       		<span>DETAILS:</span>
 				       		<div class="product-fea">
-				       			<p>100% organic cotton laces</p>
-				       			<p>SmartWool庐 fabric-lined anti-fatigue footbed provides superior, all-day comfort and climate control</p>
-				       			<p>Timberland庐 exclusive Gripstick鈩?and Green Rubber鈩?outsole is made with 42% recycled rubber</p>
-				       			<p>Premium burnished full-grain leather and suede upper</p>
-				       			<p>Leather is from a tannery rated Silver for its water, energy and waste-management practices</p>
-				       			<p>Leather lining and footbed for a premium feel and optimal comfort</p>
-				       			<p>SmartWool庐 faux shearling lining is made with 60% merino wool and 40% PET</p>
-				       			<p>Reflective insole board for additional warmth under foot</p>
-				       			<p>100% organic cotton laces</p>
-				       			<p>SmartWool庐 fabric-lined anti-fatigue footbed provides superior, all-day comfort and climate control</p>
-				       			<p>Timberland庐 exclusive Gripstick鈩?and Green Rubber鈩?outsole is made with 42% recycled rubber</p>
+				       			<p>wawa</p>
 				       		</div>
 				        </div>
 				    </div>
@@ -196,7 +181,6 @@
 				            $('.select-tab').on('click', function() {
 				                $('#horizontalTab').responsiveTabs('activate', $(this).val());
 				            });
-				
 				        });
 				    </script>
 				</div>
@@ -204,10 +188,40 @@
 		</div>
 		<div class="clearfix"></div>
 <%	
+		} else {
+%>
+			<div class="container"> 
+				<div class="special-products">
+					<div class="s-products-head">
+						<div class="s-products-head-left">
+							<h3>商品<span>详情</span></h3>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="special-products-grids">
+						您所查看的商品无效！
+					</div>
+				</div>
+			</div>
+<%
 		}
-%>			
+%>
 		<jsp:include page="../footer.jsp">
 			<jsp:param name="prefix" value=""/>
 		</jsp:include>
 	</body>
 </html>
+<script type="text/javascript"">
+	function add_to_cart(product_id, product_name, current_price) {
+		$.post("Product_addToCart.do?product_id=" + product_id, null, function(data) {
+			if(data.result == 0) {
+				alert("添加成功！");
+				window.location.reload();
+			} else if(data.result == -1){
+				alert("购物车已满！");
+			} else {
+				alert("添加失败！");
+			}
+		}, "json");
+	}
+</script>

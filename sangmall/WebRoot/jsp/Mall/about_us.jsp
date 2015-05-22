@@ -3,7 +3,13 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%
 	JSONObject json = (JSONObject)request.getAttribute("json");
-	//String image_server = json.get("image_server").toString();
+	Map cart = json.getJSONObject("cart");
+	String login_username = json.getString("login_username");
+	int cart_count = 0;
+	if(!cart.isEmpty()) {
+		cart_count = ((Map)cart.get("items")).size();
+	}
+	String image_server = json.get("image_server").toString();
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -33,18 +39,19 @@
 		</script>
 	</head>
 	<body>
-		<%= json %>
 		<div class="container">
 			<jsp:include page="../header.jsp">
 				<jsp:param name="prefix" value=""/>
+				<jsp:param name="cart_count" value="<%= cart_count %>"/>
+				<jsp:param name="login_username" value="<%= login_username %>"/>
 			</jsp:include>
 			<jsp:include page="../navigation.jsp">
 				<jsp:param name="prefix" value=""/>
 			</jsp:include>
 		</div>
 
-		<div class="product-details">
-			<div class="container">
+		<div class="container">
+			<div class="product-details">
 				<div class="product-details-row1">
 					<div class="product-details-row1-head">
 						<h2><%= json.get("title") %></h2>
